@@ -36,11 +36,13 @@ orthobo/
 │   ├── run_experiments.sh        # Full sweep launcher (45 jobs)
 │   └── aggregate_and_plot.py     # Multi-seed aggregation and plotting
 ├── figures/                      # Benchmark plots
-├── README.md                     # Info about this repository
-├── REPRODUCING.md                # How to run the benchmarks
-├── IMPLEMENTATION_NOTES.md       # Math and design decisions
+├── README.md
 └── pyproject.toml
 ```
+<!--
+├── REPRODUCING.md                # How to run the benchmarks
+├── IMPLEMENTATION_NOTES.md       # Math and design decisions
+-->
 
 <!--
 ## Using OrthoBO via OptunaHub
