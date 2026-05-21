@@ -80,13 +80,13 @@ Mean best-so-far regret ± 1 std across 5 random seeds, 200 trials, 10 startup t
 The benchmark functions used here are standard test problems from the global optimization literature [1]. Their properties are well-documented, but how those properties interact with any specific BO implementation depends on many factors (e.g. kernel choice, initialization, and MC budget). We provide some plausible explanations below, though we are not experts so these conclusions are subject to scrutiny. If you have any comments please leave feel free to write a comment in the Issues tab.
 
 ### Hartmann-6 (6 dimensions)
-![Hartmann6](figures/Hartmann6.png)
+![Hartmann6](images/Hartmann6.png)
 
 OrthoBO achieves the lowest regret, with Naive Marginal BO in the middle and Vanillac BO plateauing earliest. Hartmann-6 is a relatively smooth function with a small number of local minima [[1]](#references), which may explain why a GP surrogate can learn its global structure reliably even with few observations. It's possible that when the surrogate is well-calibrated, Vanilla BO's single maximum a posteriori (MAP) hyperparameter estimate may lead to overconfidence and premature convergence. While marginalising over the hyperposterior helps, Naive Marginal's MC noise
 appears to prevent it from fully exploiting that better model. OrthoBO's variance reduction may be removing that remaining noise, allowing cleaner exploitation of an accurate landscape. This is the setting the paper [[2]](#references) identifie as most favourable for OrthoBO.
  
 ### Levy-16 (16 dimensions)
-![Levy16](figures/Levy16.png)
+![Levy16](images/Levy16.png)
 
 All three methods converge to similar final regret after 200 trials, but OrthoBO and Naive Marginal reach that level earlier than Vanilla BO. Levy-16 is a multimodal function [1] scaled to 16 dimensions, which means the GP faces high
 uncertainty throughout the search. The earlier convergence of both marginal methods over Vanilla BO is consistent with
@@ -94,7 +94,7 @@ the idea that marginalising over hyperparameter uncertainty forces more explorat
 variance reduction becomes more important as the MC budget becomes more constrained relative to the dimensionality of the problem [[2]](#references).
  
 ### Ackley-10 (10 dimensions)
-![Ackley10](figures/Ackley10.png)
+![Ackley10](images/Ackley10.png)
 
 Vanilla BO outperforms both marginal methods, with OrthoBO and Naive Marginal plateauing around iteration 75-100. Ackley is a highly multimodal function with a nearly flat outer basin of local minima surrounding a steep central funnel [[1, 3]](#references). With only 10 startup points in 10 dimensions, it seems plausible
 that the GP initialises in the outer basin and fits its lengthscales to the local structure rather than the global funnel. It's possible that averaging EI across 64 models sampled from a miscalibrated hyperposterior may oversmooth the acquisition landscape, causing both OrthoBO and Naive Marginal to plateau in the outer basin. Vanilla BO's single MAP estimate may accidentally provide a more consistent target if it is overconfident and allows the optimizer to keep improving. This result is consistent with the paper's observation that OrthoBO's advantage is most pronounced when acquisition estimation noise is the primary failure mode [[2]](#references). On highly multimodal functions, surrogate model miscalibration may dominate instead.
