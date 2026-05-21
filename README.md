@@ -33,8 +33,8 @@ orthobo/
 │       └── theta_extraction.py   # GP hyperparameter extraction utilities
 ├── scripts/
 │   ├── run_benchmark.py          # Hydra entry point for single experiments
-│   ├── run_experiments.sh        # Full sweep launcher (45 jobs)
-│   └── aggregate_and_plot.py     # Multi-seed aggregation and plotting
+│   ├── run_experiments.sh        # Experiment sweep launcher (submits 45 jobs with hydra multirun)
+│   └── aggregate_and_plot.py     # Results aggregation and plotting
 ├── figures/                      # Benchmark plots
 ├── README.md
 └── pyproject.toml
