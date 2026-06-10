@@ -2,15 +2,14 @@
 
 A research implementation and benchmark suite for the orthogonalized Bayesian optimization algorithm introduced in [ORTHOBO: Orthogonal Bayesian Hyperparameter Optimization](https://arxiv.org/abs/2605.06454).
 
-<!--This repository contains the full benchmark infrastructure used to develop and validate an [OptunaHub](https://hub.optuna.org/samplers/orthobo/) submission of the OrthoBO sampler. If you just want to use OrthoBO in your own Optuna study, install it directly from OptunaHub (you don't need this repo).-->
+This repository contains the full benchmark infrastructure used to develop and validate an [OptunaHub](https://hub.optuna.org/samplers/orthobo/) submission of the OrthoBO sampler. If you just want to use OrthoBO in your own Optuna study, install it directly from OptunaHub (you don't need this repo).
 
 ## Table of Contents
 - [Description](#description)
 - [Repository Structure](#repository-structure)
-- [OptunaHub Usage](#optunahub-usage)
+- [Using OrthoBO via OptunaHub](#using-orthobo-via-optunahub)
 - [Benchmark Results](#benchmark-results)
 - [Reference](#reference)
-<!--[Using OrthoBO via OptunaHub](using-orthobo-via-optunahub)-->
 
 ## Description
 Standard Bayesian optimization (BO) fits a probabilistic surrogate model (typically a Gaussian process (GP)) to observed data and maximizes an acquisition function (typically Expected Improvement (EI)) to select the next evaluation point. In practice, computing this acquisition function across the model's posterior distribution is complex, so it is approximated using finite Monte Carlo (MC) sampling. However, this finite sampling introduces MC estimation noise, which can flip candidate rankings and lead to suboptimal point selection. OrthoBO reduces this noise by subtracting an orthogonal correction derived from posterior distribution gradients (score functions) to cancel out the variance components introduced during the MC evaluation. This results in more stable acquisition rankings. Whether this translates to better optimization performance depends on the problem (see [benchmark results](#benchmark-results) below).
@@ -36,17 +35,16 @@ orthobo/
 │   ├── run_experiments.sh        # Experiment sweep launcher (submits 45 jobs with hydra multirun)
 │   └── aggregate_and_plot.py     # Results aggregation and plotting
 ├── figures/                      # Benchmark plots
+├── REPRODUCING.md                # How to run the benchmarks
 ├── README.md
 └── pyproject.toml
 ```
 <!--
-├── REPRODUCING.md                # How to run the benchmarks
 ├── IMPLEMENTATION_NOTES.md       # Math and design decisions
 -->
 
-<!--
-## Using OrthoBO via OptunaHub
 
+## Using OrthoBO via OptunaHub
 ```python
 import optuna
 import optunahub
@@ -69,21 +67,20 @@ The orthogonal correction can be disabled for ablation purposes:
 # Naive Marginal BO without variance reduction
 sampler = OrthoBoSampler(use_orthogonal_correction=False)
 ```
--->
 
 ## Benchmark Results
-Mean best-so-far regret ± 1 std across 5 random seeds, 200 trials, 10 startup trials, MC budget S=64. Three methods compared:
+Mean best-so-far regret $\pm$ 1 std across 5 random seeds, 200 trials, 10 startup trials, MC budget S=64. Three methods compared:
 - Vanilla BO: Single GP qLogEI with MAP hyperparameters and Sobol MC sampling.
 - Naive Marginal BO: MC marginalisation over the hyperposterior (S=64) without any correction.
 - OrthoBO: MC marginalisation over the hyperposterior (S=64) with orthogonal score-function control variate.
 
-The benchmark functions used here are standard test problems from the global optimization literature [1]. Their properties are well-documented, but how those properties interact with any specific BO implementation depends on many factors (e.g. kernel choice, initialization, and MC budget). We provide some plausible explanations below, though we are not experts so these conclusions are subject to scrutiny. If you have any comments please leave feel free to write a comment in the Issues tab.
+The benchmark functions used here are standard test problems from the global optimization literature [1]. Their properties are well-documented, but how those properties interact with any specific BO implementation depends on many factors (e.g. kernel choice, initialization, and MC budget). We provide some plausible explanations below, though we are not experts so these conclusions are subject to scrutiny. If you have any comments please leave them in the Issues tab.
 
 ### Hartmann-6 (6 dimensions)
 ![Hartmann6](images/Hartmann6.png)
 
-OrthoBO achieves the lowest regret, with Naive Marginal BO in the middle and Vanillac BO plateauing earliest. Hartmann-6 is a relatively smooth function with a small number of local minima [[1]](#references), which may explain why a GP surrogate can learn its global structure reliably even with few observations. It's possible that when the surrogate is well-calibrated, Vanilla BO's single maximum a posteriori (MAP) hyperparameter estimate may lead to overconfidence and premature convergence. While marginalising over the hyperposterior helps, Naive Marginal's MC noise
-appears to prevent it from fully exploiting that better model. OrthoBO's variance reduction may be removing that remaining noise, allowing cleaner exploitation of an accurate landscape. This is the setting the paper [[2]](#references) identifie as most favourable for OrthoBO.
+OrthoBO achieves the lowest regret, with Naive Marginal BO in the middle and Vanilla BO plateauing earliest. Hartmann-6 is a relatively smooth function with a small number of local minima [[1]](#references), which may explain why a GP surrogate can learn its global structure reliably even with few observations. It's possible that when the surrogate is well-calibrated, Vanilla BO's single maximum a posteriori (MAP) hyperparameter estimate may lead to overconfidence and premature convergence. While marginalising over the hyperposterior helps, Naive Marginal's MC noise
+appears to prevent it from fully exploiting that better model. OrthoBO's variance reduction may be removing that remaining noise, allowing cleaner exploitation of an accurate landscape. This is the setting the paper [[2]](#references) identifies as most favourable for OrthoBO.
  
 ### Levy-16 (16 dimensions)
 ![Levy16](images/Levy16.png)
