@@ -2,7 +2,7 @@
 
 A research implementation and benchmark suite for the orthogonalized Bayesian optimization algorithm introduced in [ORTHOBO: Orthogonal Bayesian Hyperparameter Optimization](https://arxiv.org/abs/2605.06454).
 
-This repository contains the full benchmark infrastructure used to develop and validate an [OptunaHub](https://hub.optuna.org/samplers/orthobo/) submission of the OrthoBO sampler. If you just want to use OrthoBO in your own Optuna study, install it directly from OptunaHub (you don't need this repo).
+This repository contains the full benchmark infrastructure used to develop and validate an [OptunaHub](https://hub.optuna.org/samplers/orthobo/) submission of the `OrthoBoSampler`. If you just want to use OrthoBO in your own Optuna study, install it directly from OptunaHub (you don't need this repo).
 
 ## Table of Contents
 - [Description](#description)
